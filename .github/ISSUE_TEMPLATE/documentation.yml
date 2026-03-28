@@ -1,0 +1,28 @@
+# Documentation template for GitHub issues.
+# Version: 1.0
+name: Documentation
+description: Update or create technical or operational documentation
+labels: ["documentation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Provide clear purpose and scope for the documentation update.
+
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Short description of the documentation change desired.
+      placeholder: e.g. Add onboarding guide for new microservice
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other information about the documentation update here.
+      placeholder: Links, screenshots, references to other tasks.
+    validations:
+      required: false

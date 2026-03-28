@@ -1,3 +1,5 @@
+# Epic template for GitHub issues.
+# Version: 1.0
 name: Epic
 description: A larger task consisting of more deliverables.
 labels: ["epic"]
@@ -20,7 +22,7 @@ body:
     id: goals
     attributes:
       label: Goals
-      description: Bullet list of measurable goals.
+      description: Bullet list of desired goals.
       placeholder: What do we want to accomplish?
     validations:
       required: true

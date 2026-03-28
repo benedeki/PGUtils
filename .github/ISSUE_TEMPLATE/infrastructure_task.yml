@@ -1,4 +1,6 @@
-name: DevOps Task
+# Infrastructure task template for GitHub issues.
+# Version: 1.0
+name: Infrastructure Task
 description: Issue template for a task about setting up the project. Usually not touching the codebase.
 labels: ["infrastructure"]
 body:

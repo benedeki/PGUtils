@@ -1,3 +1,5 @@
+# Technical dept template for GitHub issues.
+# Version: 1.0
 name: Technical Debt
 description: Track and address technical debt items to improve code quality, maintainability, or architecture.
 labels: ["tech debt"]
@@ -13,19 +15,6 @@ body:
       label: Description of Technical Debt
       description: What is the current state that needs improvement?
       placeholder: Describe the technical debt (outdated dependencies, code smells, architecture issues, etc.)
-    validations:
-      required: true
-
-  - type: textarea
-    id: impact
-    attributes:
-      label: Impact of Technical Debt
-      description: What problems does this debt cause or risk causing?
-      placeholder: |
-        - Slows down development
-        - Increases bug risk
-        - Makes testing difficult
-        - Blocks future features
     validations:
       required: true
 
@@ -47,33 +36,12 @@ body:
     validations:
       required: true
 
-  - type: dropdown
-    id: priority
-    attributes:
-      label: Priority
-      description: How urgent is this to address?
-      options:
-        - High - Actively causing problems
-        - Medium - Should be addressed soon
-        - Low - Nice to have
-    validations:
-      required: true
-
   - type: textarea
     id: proposed-solution
     attributes:
       label: Proposed Solution
       description: How should this be addressed? Include alternatives if applicable.
       placeholder: Describe the refactoring approach, migration plan, or improvement strategy.
-    validations:
-      required: false
-
-  - type: input
-    id: effort-estimate
-    attributes:
-      label: Effort Estimate
-      description: Rough estimate of work required
-      placeholder: e.g., 1 day, 1 week, 2 sprints
     validations:
       required: false
 
