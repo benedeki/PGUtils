@@ -66,6 +66,7 @@ jobs:
         with:
           tag-name: ${{ github.event.inputs.tag-name }}
           from-tag-name: ${{ github.event.inputs.from-tag-name }}
+          release-notes-title: "#### [Rr]elease [Nn]otes:?"
           chapters: |
             - {"title": "Entries to skip 🚫", "label": "duplicate"}
             - {"title": "Entries to skip 🚫", "label": "invalid"}

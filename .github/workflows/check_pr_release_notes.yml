@@ -41,6 +41,6 @@ jobs:
         with:
           github-repository: ${{ github.repository }}
           pr-number: ${{ github.event.number }}
-          title: "## [Rr]elease [Nn]otes"
+          title: "#### [Rr]elease [Nn]otes:?"
           skip-labels: 'no RN'
           skip-placeholders: 'TBD'

@@ -1,0 +1,15 @@
+\echo Creating users
+\i database/users.ddl
+
+\echo Creating 'pgarray' schema content
+\i database/pgarray/_.ddl
+\i database/pgarray/is_unique.sql
+
+\echo Creating 'pgutils' schema content
+\i database/pgutils/_.ddl
+\i database/pgutils/global_id.sql
+\i database/pgutils/active_mutexes.ddl
+\i database/pgutils/lock_mutex.sql
+\i database/pgutils/log_to_console.sql
+
+\echo All done
