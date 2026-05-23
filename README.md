@@ -4,15 +4,20 @@ PG Utils is a collection of utility functions (and supporting structures) that s
 that are often needed when working with Postgres databases. 
 
 *Table of contents*
+
 - [Installation](#installation)
 - [Usage](#usage)
 - [Documentation](#documentation)
   - [Schema `pgarray`](#schema-pgarray)
     - [is_unique](#is_unique)
   - [Schema `pgutils`](#schema-pgutils)
+    - [can_role_alter_table](#can_role_alter_table)
     - [global_id](#global_id)
     - [lock_mutex](#lock_mutex)
     - [log_to_console](#log_to_console)
+    - [restore_all_constraints](#restore_all_constraints)
+    - [restore_constraints](#restore_constraints)    
+    - [suspend_constraints](#suspend_constraints)
 - [Contributing to PG Utils](#contributing-to-pg-utils)
   - [Did you find a bug?](#did-you-find-a-bug)
   - [Do you want to request a new feature?](#do-you-want-to-request-a-new-feature)
@@ -66,6 +71,20 @@ Checks if the array contains only unique values
 
 ### Schema `pgutils`
 
+#### can_role_alter_table
+
+Checks if the specified role has permissions to alter the given table. 
+
+| Parameter      | Type   | Default      | Description                                                                                                                                                                                                                |
+|----------------|--------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| i_schema_name  | TEXT   | -            | Schema name of the table to check the permissions for.                                                                                                                                                                     | 
+| i_table_name   | TEXT   | -            | Table name for which the permissions should be checked.                                                                                                                                                                    | 
+| i_role_name    | TEXT   | session_user | Name of the role for which the permissions should be checked. If not provided the user connected to the session is considered (not the owner of the function that calls this function even if `SECURITY DEFINER` is used). | 
+
+| Returns   |         |                                                                              |
+|-----------|---------|------------------------------------------------------------------------------|
+| can_alter | BOOLEAN | `TRUE` if the role has the permission to alter the table, `FALSE` otherwise. |
+
 #### global_id
 
 Generates a unique ID, with the proper setup unique over all your servers
@@ -74,18 +93,18 @@ Generates a unique ID, with the proper setup unique over all your servers
 |---------|---------------------------|
 | BIGINT  | The unique 64-bit integer |
 
-### lock_mutex
+#### lock_mutex
 
 The goal of this function is to implement concurrent operation execution - operation is given in the input parameter.
 
 Call this function at the beginning of an operation (usually a wider UPDATE/INSERT) that you want to prevent concurrent
 execution of, and the release will happen automatically when the transaction finishes or rolls back.
 
-| Parameter    | Type | Description                                                                                                                |
-|--------------|------|----------------------------------------------------------------------------------------------------------------------------|
-| i_mutex_name | TEXT | Name of the operation that will perform the lock. The name is the key for locking, different names won't block each other. |
+| Parameter    | Type | Description                                                                                                                                                                                                                                              |
+|--------------|------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| i_mutex_name | TEXT | The name of the lock, usually the name of the function that wants to acquire the lock. This is used to prevent concurrent execution of the same function. Operations with the same `i_mutex_name` are serialized, different ones don't block each other. |
 
-### log_to_console
+#### log_to_console
 
 Prints out a message to the console, optionally prefixed by current timestamp. Useful when a progress report is handy
 during long operations.
@@ -95,6 +114,73 @@ during long operations.
 | i_log_message   | TEXT    | -       | Message to write into the console.                                                | 
 | i_add_timestamp | BOOLEAN | `TRUE` | If TRUE, message is prefixed by a timestamp, otherwise only the message is output. | 
 
+
+#### restore_all_constraints
+
+Restores all the constraints that were temporarily suspended, presumably by
+[`pgutils.suspend_constraints`](#suspend_constraints) function, and returns the schema, table name and info of the
+restored constraint.
+
+| Parameter              | Type    | Default | Description                                                                                                                                                                                                                                                                                                                                                                        |
+|------------------------|---------|---------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| i_enforced_valid_state | BOOLEAN | `NULL`  | Setting that can enforce the constraints to be restored in certain validity state regardless  of previous state. If set to `TRUE`, all the constraints will be restored as VALID, if set to `FALSE`, all the constraints will be restored as NOT VALID, and if set to NULL (default), the constraints will be restored to their previous state regardless of their previous state. | 
+
+| Returns (set)   |         |                                                                      |
+|-----------------|---------|----------------------------------------------------------------------|
+| schema_name     | TEXT    | Schema name of the table for which the constraint has been restored. |
+| table_name      | TEXT    | Table name for which the constraint has been restored.               |
+| constraint_name | TEXT    | Name of the restored constraint.                                     |
+| constraint_type | TEXT    | Type of the restored constraint.                                     |
+| validated       | BOOLEAN | Whether the constraint is valid after being restored.                |
+
+#### restore_constraints
+
+suspends all the constraints of the specified types for a given table and stores their definitions in a temporary table.
+
+| Parameter              | Type    | Default  | Description                                                                                                                                                                                                                                                                                                                                                                        |
+|------------------------|---------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| i_schema_name          | TEXT    | 'public' | Schema name of the table for which the constraints should be restored.                                                                                                                                                                                                                                                                                                             | 
+| i_table_name           | TEXT    | -        | Table name for which the constraints should be restored.                                                                                                                                                                                                                                                                                                                            |
+| i_enforced_valid_state | BOOLEAN | `NULL`   | Setting that can enforce the constraints to be restored in certain validity state regardless  of previous state. If set to `TRUE`, all the constraints will be restored as VALID, if set to `FALSE`, all the constraints will be restored as NOT VALID, and if set to NULL (default), the constraints will be restored to their previous state regardless of their previous state. | 
+
+| Returns (set)   |         |                                                       |
+|-----------------|---------|-------------------------------------------------------|
+| constraint_name | TEXT    | Name of the restored constraint.                      |
+| constraint_type | TEXT    | Type of the restored constraint.                      |
+| validated       | BOOLEAN | Whether the constraint is valid after being restored. |
+
+#### suspend_constraints
+
+suspends all the constraints of the specified types for a given table and stores their definitions in a table.
+
+| Parameter          | Type     | Default  | Description                                                                                                                                                                                                                                                                                                                                                                                   |
+|--------------------|----------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| i_schema_name      | TEXT     | 'public' | Schema name of the table for which the constraints should be suspended.                                                                                                                                                                                                                                                                                                                       | 
+| i_table_name       | TEXT     | -        | Table name for which the constraints should be suspended.                                                                                                                                                                                                                                                                                                                                     |
+| i_constraint_types | TEXT[]   | `NULL`   | Array of constraint types to suspend. If `NULL` all constraints are suspended.                                                                                                                                                                                                                                                                                                                |
+| i_persistently     | BOOLEAN  | `FALSE`  | Flag that indicates whether the suspended constraints should be stored persistently so it last over transactions.<br>**NB!** Use persistence CAREFULLY RESPONSIBLY, as the constraints will be suspended until they are explicitly restored and can lead to data integrity issues. Only a user with grant to alter the table can use this option, otherwise the function will raise an error. |
+
+| Returns (set)   |      |                                  |
+|-----------------|------|----------------------------------|
+| constraint_name | TEXT | Name of the suspended constraint. |
+| constraint_type | TEXT | Type of the suspended constraint. |
+
+#### suspend_constraints_by_name
+
+suspends all the constraints of the provided names for a given table and stores their definitions in a table.
+
+| Parameter          | Type     | Default  | Description                                                                                                                                                                                                                                                                                                                                                                                   |
+|--------------------|----------|----------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| i_schema_name      | TEXT     | 'public' | Schema name of the table for which the constraints should be suspended.                                                                                                                                                                                                                                                                                                                       | 
+| i_table_name       | TEXT     | -        | Table name for which the constraints should be suspended.                                                                                                                                                                                                                                                                                                                                     |
+| i_constraint_names | TEXT[]   | -        | Array of constraint names to suspend.                                                                                                                                                                                                                                                                                                                                                         |
+| i_persistently     | BOOLEAN  | `FALSE`  | Flag that indicates whether the suspended constraints should be stored persistently so it last over transactions.<br>**NB!** Use persistence CAREFULLY RESPONSIBLY, as the constraints will be suspended until they are explicitly restored and can lead to data integrity issues. Only a user with grant to alter the table can use this option, otherwise the function will raise an error. |
+
+| Returns (set)   |      |                                  |
+|-----------------|------|----------------------------------|
+| constraint_name | TEXT | Name of the suspended constraint. |
+| constraint_type | TEXT | Type of the suspended constraint. |
+
 ## Tests
 
 Tests are written using the [Balta](https://github.com/AbsaOSS/balta) Scala library, and the whole test suites is and sbt project.
@@ -103,7 +189,7 @@ To run the tests, you need to have sbt installed and configured on your machine.
 in the root directory of the project to run all tests:
 
 ```bash
-psql -h host -p port -U user -d dbname -f tests/src/test/resources/test_user.ddl
+psql -h host -p port -U user -d dbname -f tests/src/test/resources/test_users.ddl
 psql -h host -p port -U user -d dbname  -c "GRANT CONNECT ON DATABASE [dbname] TO pgutils_tester;"
 sbt test
 ```

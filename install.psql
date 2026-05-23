@@ -7,9 +7,20 @@
 
 \echo Creating 'pgutils' schema content
 \i database/pgutils/_.ddl
-\i database/pgutils/global_id.sql
+\i database/pgutils/_restore_constraints.sql
+\i database/pgutils/_suspend_constraints.sql
+\i database/pgutils/_trg_suspended_constraints_in_transaction_empty_check.sql
 \i database/pgutils/active_mutexes.ddl
+\i database/pgutils/can_role_alter_table.sql
+\i database/pgutils/suspend_constraints.sql
+\i database/pgutils/suspend_constraints_by_name.sql
+\i database/pgutils/suspended_constraints_in_transaction.ddl
+\i database/pgutils/suspended_constraints_persistently.ddl
+\i database/pgutils/global_id.sql
+\i database/pgutils/list_constraints.sql
 \i database/pgutils/lock_mutex.sql
 \i database/pgutils/log_to_console.sql
+\i database/pgutils/restore_all_constraints.sql
+\i database/pgutils/restore_constraints.sql
 
 \echo All done

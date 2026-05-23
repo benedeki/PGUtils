@@ -15,21 +15,22 @@
 
 DO
 $do$
-    BEGIN
-        IF EXISTS (
-                SELECT FROM pg_catalog.pg_roles
-                WHERE  rolname = 'pgutils_tester') THEN
-
-            RAISE NOTICE 'Role "pgutils_tester" already exists. Skipping.';
-        ELSE
-            CREATE ROLE pgutils_tester
-                LOGIN
-                PASSWORD 'ChangeMe!'
-                NOSUPERUSER
-                INHERIT
-                NOCREATEDB
-                NOCREATEROLE
-                NOREPLICATION;
-        END IF;
-    END;
+BEGIN
+    IF EXISTS (
+        SELECT FROM pg_catalog.pg_roles
+        WHERE  rolname = 'pgutils_tester')
+    THEN
+        ALTER ROLE pgutils_tester CREATEROLE;
+        RAISE NOTICE 'Role "pgutils_tester" already exists. Skipping.';
+    ELSE
+        CREATE ROLE pgutils_tester
+            LOGIN
+            PASSWORD 'ChangeMe!'
+            NOSUPERUSER
+            INHERIT
+            NOCREATEDB
+            NOREPLICATION;
+    END IF;
+    GRANT CREATE ON SCHEMA pgutils TO pgutils_tester;
+END;
 $do$;

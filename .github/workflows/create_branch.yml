@@ -27,6 +27,7 @@ permissions:
 jobs:
   create-branch:
     if: startsWith(github.event.comment.body, '/create-branch')
+    name: Create Branch From Issue Comment
     runs-on: ubuntu-latest
 
     steps:

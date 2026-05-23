@@ -17,9 +17,9 @@ DO
 $do$
     BEGIN
         IF EXISTS (
-                SELECT FROM pg_catalog.pg_roles
-                WHERE  rolname = 'pgutils_owner') THEN
-
+            SELECT FROM pg_catalog.pg_roles
+            WHERE  rolname = 'pgutils_owner')
+        THEN
             RAISE NOTICE 'Role "pgutils_owner" already exists. Skipping.';
         ELSE
             CREATE ROLE pgutils_owner
