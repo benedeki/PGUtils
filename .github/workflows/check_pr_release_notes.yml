@@ -19,7 +19,7 @@ name: Check PR Release Notes
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, labeled, unlabeled]
-    branches: [ master ]
+    branches: [ master, main ]
 
 env:
   skip-label: 'no RN'
