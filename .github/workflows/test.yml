@@ -61,7 +61,7 @@ jobs:
           PGPASSWORD:  ${{ env.postgres-password }}
         run: |
           psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -f install.psql
-          psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -f tests/src/test/resources/test_user.ddl
+          psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -f testing_install.psql
           psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -c "GRANT CONNECT ON DATABASE pgutils_db TO pgutils_tester;"
       - name: Run tests
         run: sbt test
