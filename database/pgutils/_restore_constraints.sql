@@ -32,13 +32,13 @@ $$
 -- Parameters:
 --      i_schema_name           - Schema name of the table for which the constraints should be restored
 --      i_table_name            - Table name for which the constraints should be restored
---      i_enforced_valid_state  - (optional) Flag that can enforce the constraints to be restored as NOT VALID
---                                regardless of their previous state. This can be useful in case when the constraints
---                                were suspended for a large data change where the data are fairly certain to be OK
---                                and/or just want to validate the constraints later in a separate transaction to avoid
---                                locking the table for too long. By default, the constraints will be restored to their
---                                previous state, meaning that if a constraint was valid before disabling, it will be
---                                restored as valid, and if it was not valid, it will be restored as not valid.
+--      i_enforced_valid_state  - Flag that can enforce the constraints to be restored as NOT VALID regardless of their
+--                                previous state. This can be useful in case when the constraints were suspended for a
+--                                large data change where the data are fairly certain to be OK and/or just want to
+--                                validate the constraints later in a separate transaction to avoid locking the table
+--                                for too long. By default, the constraints will be restored to their previous state,
+--                                meaning that if a constraint was valid before disabling, it will be restored as valid,
+--                                and if it was not valid, it will be restored as not valid.
 --                                NB!
 --                                `NOT VALID` constraint means, it's not guaranteed that the existing data in the table
 --                                satisfy the constraint, but any new data inserted or updated after the constraint is
