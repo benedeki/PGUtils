@@ -29,7 +29,7 @@ COMMENT ON TABLE pgutils.suspended_constraints_persistently IS  $COMMENT$
 A table to hold the constraints where suspension persists past the transaction.
  It belongs to superuser `postgres`, because it would offer a chance for SQL injection otherwise. As only superuser can
  reads and most of all writes to this table, it's safe to consider it a sufficient protection. Because if a superuser
- access would be compromised to tinker with thins table, then the whole database is already compromised.
+ access would be compromised to tinker with this table, then the whole database is already compromised.
  $COMMENT$;
 
 ALTER TABLE pgutils.suspended_constraints_persistently OWNER TO postgres;
