@@ -30,7 +30,7 @@ $$
 --     function, and returns the schema, table name and info of the restored constraint.
 --
 -- Parameters:
---      i_enforce_not_valid     - (optional) Setting that can enforce the constraints to be restored in certain validity
+--      i_enforced_valid_state     - (optional) Setting that can enforce the constraints to be restored in certain validity
 --                                state regardless  of previous state. If set to TRUE, all the constraints will be
 --                                restored as VALID, if set to FALSE, all the constraints will be restored as NOT VALID,
 --                                and if set to NULL (default), the constraints will be restored to their previous state.

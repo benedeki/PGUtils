@@ -57,7 +57,7 @@ $$
 --
 -------------------------------------------------------------------------------
 DECLARE
-    _non_priviliged_user    BOOLEAN;
+    _non_privileged_user    BOOLEAN;
     _r                      RECORD;
     _constraints_command    TEXT := '';
 
