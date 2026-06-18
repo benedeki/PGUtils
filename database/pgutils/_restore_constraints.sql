@@ -60,12 +60,8 @@ DECLARE
     _non_privileged_user    BOOLEAN;
     _r                      RECORD;
     _constraints_command    TEXT := '';
-
-    _constraints        TEXT[];
-    _constraint_count   INTEGER;
 BEGIN
-
-    _non_priviliged_user := NOT pgutils.can_role_alter_table(i_schema_name, i_table_name);
+    _non_privileged_user := NOT pgutils.can_role_alter_table(i_schema_name, i_table_name);
 
     FOR _r IN
         WITH scit AS (
@@ -88,15 +84,16 @@ BEGIN
         SELECT scp.schema_name, scp.table_name, scp.constraint_name, scp.definition, scp.constraint_type, scp.validated
         FROM scp
     LOOP
-        IF _non_priviliged_user THEN
+        IF _non_privileged_user THEN
             IF NOT(_r.validated) THEN
                 RAISE EXCEPTION
                     'User % cannot restore non-valid constraint % on table %.%. It might affect data integrity without the permission to alter the table.',
                     session_user, _r.constraint_name, i_schema_name, i_table_name;
             END IF;
 
-            IF ((i_enforced_valid_state) and NOT(_r.validated)) OR
-               ((NOT(i_enforced_valid_state) AND _r.validated)) THEN
+            -- enforcing a state change to another that it was before requires a privileged user
+            -- but the other combination doesn't need to be checked because of the condition above
+            IF (NOT(i_enforced_valid_state) AND _r.validated) THEN
                 RAISE EXCEPTION
                     'User % cannot restore constraint % on table %.%. The constraint validity state would change and the user does not have permission to alter the table.',
                     session_user, _r.constraint_name, i_schema_name, i_table_name;

@@ -238,3 +238,16 @@ where you need to replace `host`, `port`, `user` and `dbname` with the appropria
 Originally it was intended to name the package and main schema _pg_utils_, and the owning role _pg_utils_owner_. 
 But the prefix `pg_` is reserved for Postgres internal objects, so we had to rename the objets. Just omitting the
 underscore seems to be the best option.
+
+### Constraint types
+The following constraint types are supported by the `suspend_constraints` and `list_constraints` functions (case 
+insensitive):
+
+| Constraint type (word) | Constraint type (char) | Description            |
+|------------------------|------------------------|------------------------|
+| `CHECK`                | `c`                    | CHECK constraint       |
+| `FOREIGN KEY`          | `f`                    | FOREIGN KEY constraint |
+| `PRIMARY KEY`          | `p`                    | PRIMARY KEY constraint |
+| `UNIQUE`               | `u`                    | UNIQUE constraint      |
+| `NOT NULL`             | `n`                    | NOT NULL constraint    |
+| `EXCLUSION`            | `x`                    | EXCLUSION constraint   |

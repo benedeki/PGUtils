@@ -33,7 +33,7 @@ BEGIN
     IF NOT found     THEN
        -- _server_id can be calculated in various ways, the key is to have a deterministic prescription that returns a
        -- number between 1 and _server_count and is expected to differ between servers.
-        _server_id := abs(hashtextextended(inet_server_addr()::text, 0)) % 9222;
+        _server_id := abs(hashtextextended(inet_server_addr()::text, 0)) % _server_count;
 
         _sequence_start := (_server_id + 1) * _sequence_range + 1; -- (_server_id + 1) to avoid starting at 0 for server_id 0, thus 32 bits to not interfering
         _sequence_end := (_server_id + 2) * _sequence_range;

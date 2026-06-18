@@ -20,7 +20,7 @@ CREATE OR REPLACE FUNCTION pgarray.is_unique(
 )
 -------------------------------------------------------------------------------
 --
--- Function: utils.is_unique(2)
+-- Function: pgarray.is_unique(2)
 -- Version:  0.1.0
 --
 --      Checks if the array contains only unique values
