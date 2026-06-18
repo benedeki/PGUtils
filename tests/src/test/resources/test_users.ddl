@@ -28,6 +28,7 @@ BEGIN
             PASSWORD 'ChangeMe!'
             NOSUPERUSER
             INHERIT
+            CREATEROLE
             NOCREATEDB
             NOREPLICATION;
     END IF;
