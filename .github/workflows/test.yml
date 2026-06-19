@@ -70,6 +70,7 @@ jobs:
       # Verify Scala + sbt
       - name: Check versions
         run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
           java -version
           scala -version
           sbt --version
@@ -81,5 +82,8 @@ jobs:
           psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -f install.psql
           psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -f testing_install.psql
           psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -c "GRANT CONNECT ON DATABASE pgutils_db TO pgutils_tester;"
+
       - name: Run tests
-        run: sbt test
+        run: |
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sbt test
