@@ -58,10 +58,11 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - name: Install Coursier via Homebrew
+      - name: Install Coursier
         run: |
-          brew install coursier/formulas/coursier
-          cs setup -y
+          curl -fLo cs https://git.io/coursier-cli-linux
+          chmod +x cs
+          CS_NO_SELF_UPDATE=1 ./cs setup -y
 
       # Verify Scala + sbt
       - name: Check versions
