@@ -1,5 +1,14 @@
-rules:
-  ignore:
-    - id: insecure-action-version
-      paths:
-        - ".github/workflows/*.yml"
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v1.json
+language: "en-US"
+version: 1
+
+exclude:
+  paths:
+    - ".github/workflows/"
+  patterns:
+    - "z0al/dependent-issues"
+    - "actions/checkout"
+    - "coursier/cache-actione"
+    - "actions/setup-java"
+    - "actions/add-to-project"
+    - "actions/setup-python"

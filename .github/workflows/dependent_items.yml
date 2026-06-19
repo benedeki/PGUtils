@@ -48,7 +48,7 @@ jobs:
       issues: write
       pull-requests: read
     steps:
-      - uses: z0al/dependent-issues@950226e7ca8fc43dc209a7febf67c655af3bdb43 # v1.5.2
+      - uses: z0al/dependent-issues@v1
         env:
           # (Required) The token to use to make API calls to GitHub.
           GITHUB_TOKEN: ${{ secrets.PAT_REPO_PROJECT_DISCUSS }}
