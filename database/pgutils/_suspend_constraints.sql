@@ -89,7 +89,6 @@ BEGIN
             i_schema_name,
             i_table_name,
             PCON.conname,
-            pg_get_constraintdef(PCON.oid, TRUE),
             PCON.contype,
             PCON.convalidated,
             PCON.oid

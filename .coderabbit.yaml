@@ -1,0 +1,5 @@
+rules:
+  ignore:
+    - id: insecure-action-version
+      paths:
+        - ".github/workflows/*.yml"

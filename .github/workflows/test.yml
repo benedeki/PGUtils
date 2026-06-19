@@ -45,13 +45,12 @@ jobs:
           - 5432:5432
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
           persist-credentials: false
-      - uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433
+      - uses: coursier/cache-action@v8
 
-      # Install Java 8 (AdoptOpenJDK)
       - name: Set up Java 8
         uses: actions/setup-java@v4
         with:

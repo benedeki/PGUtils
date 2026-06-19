@@ -75,7 +75,7 @@ $$
     SELECT DC.constraint_name, DC.constraint_type
     FROM pgutils.list_constraints('public', i_table_name) DC
 $$
-LANGUAGE sql VOLATILE SECURITY DEFINER;
+LANGUAGE sql STABLE SECURITY DEFINER;
 
 ALTER FUNCTION pgutils.list_constraints(TEXT) OWNER TO pgutils_owner;
 GRANT EXECUTE ON FUNCTION pgutils.list_constraints(TEXT) TO public;

@@ -40,8 +40,12 @@ DO $$
     BEGIN
         IF NOT EXISTS (
             SELECT 1
-            FROM pg_trigger
-            WHERE tgname = 'trg_suspended_constraints_in_transaction'
+            FROM pg_trigger t
+                INNER JOIN pg_class c ON t.tgrelid = c.oid
+                INNER JOIN pg_namespace n ON c.relnamespace = n.oid
+            WHERE t.tgname = 'trg_suspended_constraints_in_transaction' AND
+                c.relname = 'suspended_constraints_in_transaction' AND
+                n.nspname = 'pgutils'
         ) THEN
             CREATE CONSTRAINT TRIGGER trg_suspended_constraints_in_transaction
                 AFTER INSERT OR UPDATE ON pgutils.suspended_constraints_in_transaction

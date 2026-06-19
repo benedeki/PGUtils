@@ -1,26 +1,26 @@
 \echo Creating users
-\i database/users.ddl
+\ir database/users.ddl
 
 \echo Creating 'pgarray' schema content
-\i database/pgarray/_.ddl
-\i database/pgarray/is_unique.sql
+\ir database/pgarray/_.ddl
+\ir database/pgarray/is_unique.sql
 
 \echo Creating 'pgutils' schema content
-\i database/pgutils/_.ddl
-\i database/pgutils/_restore_constraints.sql
-\i database/pgutils/_suspend_constraints.sql
-\i database/pgutils/_trg_suspended_constraints_in_transaction_empty_check.sql
-\i database/pgutils/active_mutexes.ddl
-\i database/pgutils/can_role_alter_table.sql
-\i database/pgutils/suspend_constraints.sql
-\i database/pgutils/suspend_constraints_by_name.sql
-\i database/pgutils/suspended_constraints_in_transaction.ddl
-\i database/pgutils/suspended_constraints_persistently.ddl
-\i database/pgutils/global_id.sql
-\i database/pgutils/list_constraints.sql
-\i database/pgutils/lock_mutex.sql
-\i database/pgutils/log_to_console.sql
-\i database/pgutils/restore_all_constraints.sql
-\i database/pgutils/restore_constraints.sql
+\ir database/pgutils/_.ddl
+\ir database/pgutils/_restore_constraints.sql
+\ir database/pgutils/_suspend_constraints.sql
+\ir database/pgutils/_trg_suspended_constraints_in_transaction_empty_check.sql
+\ir database/pgutils/active_mutexes.ddl
+\ir database/pgutils/can_role_alter_table.sql
+\ir database/pgutils/suspend_constraints.sql
+\ir database/pgutils/suspend_constraints_by_name.sql
+\ir database/pgutils/suspended_constraints_in_transaction.ddl
+\ir database/pgutils/suspended_constraints_persistently.ddl
+\ir database/pgutils/global_id.sql
+\ir database/pgutils/list_constraints.sql
+\ir database/pgutils/lock_mutex.sql
+\ir database/pgutils/log_to_console.sql
+\ir database/pgutils/restore_all_constraints.sql
+\ir database/pgutils/restore_constraints.sql
 
 \echo All done
