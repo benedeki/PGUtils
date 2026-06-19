@@ -124,7 +124,8 @@ BEGIN
     RETURN;
 END;
 $$
-LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
+LANGUAGE plpgsql VOLATILE SECURITY DEFINER
+SET search_path = pg_temp, pg_catalog, public;
 
 ALTER FUNCTION pgutils._restore_constraints(TEXT, TEXT, BOOLEAN) OWNER TO postgres;
 GRANT EXECUTE ON FUNCTION pgutils._restore_constraints(TEXT, TEXT, BOOLEAN) TO pgutils_owner;

@@ -135,7 +135,8 @@ restored constraint.
 
 #### restore_constraints
 
-suspends all the constraints of the specified types for a given table and stores their definitions in a temporary table.
+Restores all the constraints for a given table that were temporarily suspended, presumably by 
+`pgutils.suspend_constraints` function, and returns the names of the restored constraints.
 
 | Parameter              | Type    | Default  | Description                                                                                                                                                                                                                                                                                                                                                                        |
 |------------------------|---------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

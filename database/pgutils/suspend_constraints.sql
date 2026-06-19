@@ -56,19 +56,24 @@ BEGIN
     IF i_constraint_types IS NULL THEN
         _constraint_types := _ALL_CONSTRAINTS;
     ELSE
-        SELECT array_agg(
-                   CASE upper(CT.ct)
+        SELECT array_agg(X.ct)::CHAR[]
+        FROM (
+            SELECT CASE upper(CT.ct)
                        WHEN 'CHECK' THEN 'c'
                        WHEN 'FOREIGN KEY' THEN 'f'
                        WHEN 'PRIMARY KEY' THEN 'p'
                        WHEN 'UNIQUE' THEN 'u'
                        WHEN 'NOT NULL' THEN 'n'
-                       WHEN 'EXCLUDE' THEN 'x'
+                       WHEN 'EXCLUSION' THEN 'x'
                        WHEN 'CONSTRAINT TRIGGER' THEN 't'
-                       ELSE lower(left(CT.ct, 1))
-                   END
-               )::CHAR[]
-        FROM unnest(i_constraint_types) CT
+                       ELSE CASE
+                                WHEN char_length(CT.ct) = 1 THEN CT.CT
+                                ELSE NULL
+                            END
+                   END AS ct
+            FROM unnest(i_constraint_types) CT
+            WHERE CT.ct IS NOT NULL
+        ) X
         INTO _constraint_types;
     END IF;
 
