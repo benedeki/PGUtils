@@ -58,11 +58,14 @@ jobs:
           distribution: 'adopt'
           java-version: '8'
 
-      - name: Install Coursier
+      - name: Install SDKMAN
+        run: curl -s "https://get.sdkman.io" | bash
+
+      - name: Install Scala + sbt
         run: |
-          curl -fLo cs https://git.io/coursier-cli-linux
-          chmod +x cs
-          CS_NO_SELF_UPDATE=1 ./cs setup -y
+          source "$HOME/.sdkman/bin/sdkman-init.sh"
+          sdk install scala 2.12.18
+          sdk install sbt 1.10.0
 
       # Verify Scala + sbt
       - name: Check versions
