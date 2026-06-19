@@ -67,14 +67,6 @@ jobs:
           sdk install scala 2.12.18
           sdk install sbt 1.10.0
 
-      # Verify Scala + sbt
-      - name: Check versions
-        run: |
-          source "$HOME/.sdkman/bin/sdkman-init.sh"
-          java -version
-          scala -version
-          sbt --version
-
       - name: Prepare testing database
         env:
           PGPASSWORD:  ${{ env.postgres-password }}
