@@ -24,6 +24,7 @@ that are often needed when working with Postgres databases.
   - [Do you want to implement a new feature, fix a bug or improved the documentation?](#do-you-want-to-implement-a-new-feature-fix-a-bug-or-improved-the-documentation) 
 - [Tests](#tests)
 - [Notes](#notes)
+  - [Constraint types](#constraint-types)
 
 ## Installation
 
@@ -133,6 +134,8 @@ restored constraint.
 | constraint_type | TEXT    | Type of the restored constraint.                                     |
 | validated       | BOOLEAN | Whether the constraint is valid after being restored.                |
 
+Possible returned constraint types can be seen in [constraint types](#constraint-types), the `char` column.
+
 #### restore_constraints
 
 Restores all the constraints for a given table that were temporarily suspended, presumably by 
@@ -150,6 +153,8 @@ Restores all the constraints for a given table that were temporarily suspended, 
 | constraint_type | TEXT    | Type of the restored constraint.                      |
 | validated       | BOOLEAN | Whether the constraint is valid after being restored. |
 
+Possible returned constraint types can be seen in [constraint types](#constraint-types), the `char` column.
+
 #### suspend_constraints
 
 suspends all the constraints of the specified types for a given table and stores their definitions in a table.
@@ -161,10 +166,14 @@ suspends all the constraints of the specified types for a given table and stores
 | i_constraint_types | TEXT[]   | `NULL`   | Array of constraint types to suspend. If `NULL` all constraints are suspended.                                                                                                                                                                                                                                                                                                                |
 | i_persistently     | BOOLEAN  | `FALSE`  | Flag that indicates whether the suspended constraints should be stored persistently so it last over transactions.<br>**NB!** Use persistence CAREFULLY RESPONSIBLY, as the constraints will be suspended until they are explicitly restored and can lead to data integrity issues. Only a user with grant to alter the table can use this option, otherwise the function will raise an error. |
 
-| Returns (set)   |      |                                  |
-|-----------------|------|----------------------------------|
+See accepted [constraint types](#constraint-types).
+
+| Returns (set)   |      |                                   |
+|-----------------|------|-----------------------------------|
 | constraint_name | TEXT | Name of the suspended constraint. |
-| constraint_type | TEXT | Type of the suspended constraint. |
+| constraint_type | CHAR | Type of the suspended constraint. |
+
+Possible returned constraint types can be seen in [constraint types](#constraint-types), the `char` column. 
 
 #### suspend_constraints_by_name
 
@@ -181,6 +190,8 @@ suspends all the constraints of the provided names for a given table and stores 
 |-----------------|------|----------------------------------|
 | constraint_name | TEXT | Name of the suspended constraint. |
 | constraint_type | TEXT | Type of the suspended constraint. |
+
+Possible returned constraint types can be seen in [constraint types](#constraint-types), the `char` column.
 
 ## Tests
 
@@ -241,8 +252,8 @@ But the prefix `pg_` is reserved for Postgres internal objects, so we had to ren
 underscore seems to be the best option.
 
 ### Constraint types
-The following constraint types are supported by the `suspend_constraints` and `list_constraints` functions (case 
-insensitive):
+The following constraint types are supported by the `suspend_constraints` and `list_constraints` functions 
+(case-insensitive):
 
 | Constraint type (word) | Constraint type (char) | Description            |
 |------------------------|------------------------|------------------------|

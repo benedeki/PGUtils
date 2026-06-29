@@ -5,10 +5,12 @@ version: 1
 exclude:
   paths:
     - ".github/workflows/"
+    - ".github/workflows/*.yml"
+    - ".github/workflows/*.yaml"
   patterns:
     - "z0al/dependent-issues"
-    - "actions/checkout"
-    - "coursier/cache-actione"
-    - "actions/setup-java"
-    - "actions/add-to-project"
-    - "actions/setup-python"
+    - "actions/checkout@v"
+    - "coursier/cache-action@v"
+    - "actions/setup-java@v"
+    - "actions/add-to-project@v"
+    - "actions/setup-python@v"
