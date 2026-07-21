@@ -61,6 +61,7 @@ BEGIN
         UNION
         SELECT DISTINCT SCP.schema_name, SCP.table_name
         FROM pgutils.suspended_constraints_persistently SCP
+        -- TODO Restore constraints needs to be ordered https://github.com/benedeki/PGUtils/issues/16
     LOOP
         RETURN QUERY
         SELECT _r.schema_name, _r.table_name, RC.constraint_name, RC.constraint_type, RC.validated

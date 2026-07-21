@@ -60,7 +60,7 @@ GRANT EXECUTE ON FUNCTION pgutils.suspend_constraints_by_name(TEXT, TEXT, TEXT[]
 
 CREATE OR REPLACE FUNCTION pgutils.suspend_constraints_by_name(
     IN  i_table_name            TEXT,
-    IN  i_constraint_names      TEXT[] DEFAULT NULL,
+    IN  i_constraint_names      TEXT[],
     IN  i_persistently          BOOLEAN DEFAULT FALSE,
     OUT constraint_name         TEXT,
     OUT constraint_type         CHAR

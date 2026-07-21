@@ -20,8 +20,15 @@ BEGIN
         SELECT FROM pg_catalog.pg_roles
         WHERE  rolname = 'pgutils_tester')
     THEN
-        ALTER ROLE pgutils_tester CREATEROLE;
-        RAISE NOTICE 'Role "pgutils_tester" already exists. Skipping.';
+        ALTER ROLE pgutils_tester
+            LOGIN
+            PASSWORD 'ChangeMe!'
+            NOSUPERUSER
+            INHERIT
+            CREATEROLE
+            NOCREATEDB
+            NOREPLICATION;
+       RAISE NOTICE 'Role "pgutils_tester" already exists. Skipping.';
     ELSE
         CREATE ROLE pgutils_tester
             LOGIN

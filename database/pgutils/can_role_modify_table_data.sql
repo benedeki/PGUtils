@@ -42,7 +42,12 @@ $$
 DECLARE
     _full_table_name    TEXT;
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = i_role_name) THEN
+
+    PERFORM 1
+    FROM pg_catalog.pg_roles
+    WHERE rolname = i_role_name;
+
+    IF NOT found THEN
         can_modify := FALSE;
         RETURN;
     END IF;
