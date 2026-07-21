@@ -13,24 +13,13 @@
  * limitations under the License.
  */
 
-package benedeki.testing
+package benedeki.testing.classes
 
-import za.co.absa.db.balta.classes.DBConnection
+import org.scalactic.source
+import org.scalatest.Tag
+import org.scalatest.funsuite.AnyFunSuiteLike
 
-object ExtraFunctions {
-  private def execute(sql: String)(implicit connection: DBConnection): Unit = {
-    val stmt = connection.connection.createStatement()
-    try
-      stmt.executeUpdate(sql)
-    finally
-      stmt.close()
-  }
-
-  def ddl(sql: String)(implicit connection: DBConnection): Unit = {
-    execute(sql)
-  }
-
-  def dml(sql: String)(implicit connection: DBConnection): Unit = {
-    execute(sql)
-  }
+trait OriginalTestMethod extends AnyFunSuiteLike {
+  override def test(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit =
+    super.test(testName, testTags: _*)(testFun)
 }

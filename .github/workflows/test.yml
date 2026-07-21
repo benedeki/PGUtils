@@ -49,22 +49,13 @@ jobs:
         with:
           fetch-depth: 1
           persist-credentials: false
-      - uses: coursier/cache-action@v8
 
-      - name: Set up Java 8
-        uses: actions/setup-java@v4
+      - uses: coursier/setup-action@v1
         with:
-          distribution: 'adopt'
-          java-version: '8'
+          jvm: adopt:8
+          apps: sbt
 
-      - name: Install SDKMAN
-        run: curl -s "https://get.sdkman.io" | bash
-
-      - name: Install Scala + sbt
-        run: |
-          source "$HOME/.sdkman/bin/sdkman-init.sh"
-          sdk install scala 2.12.18
-          sdk install sbt 1.10.0
+      - uses: coursier/cache-action@v8
 
       - name: Prepare testing database
         env:

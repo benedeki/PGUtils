@@ -92,6 +92,8 @@ $$
 LANGUAGE plpgsql VOLATILE SECURITY DEFINER;
 
 ALTER FUNCTION pgutils.suspend_constraints(TEXT, TEXT, TEXT[], BOOLEAN) OWNER TO pgutils_owner;
+-- As the function can take `ACCESS EXCLUSIVE` lock, consider limiting the access to the function to only trusted users,
+-- as it can lead to blocking access for other users.
 GRANT EXECUTE ON FUNCTION pgutils.suspend_constraints(TEXT, TEXT, TEXT[], BOOLEAN) TO public;
 
 
@@ -124,7 +126,6 @@ $$
 --                                are explicitly restored and can lead to data integrity issues.
 --                                Only a user with grant to alter the table can use this option, otherwise the function
 --                                will raise an error.
---                                constraints will be suspended.
 --
 -- Returns:
 --      constraint_name         - Name of the suspended constraint
@@ -137,4 +138,6 @@ $$
 LANGUAGE sql VOLATILE SECURITY DEFINER;
 
 ALTER FUNCTION pgutils.suspend_constraints(TEXT, TEXT[], BOOLEAN) OWNER TO pgutils_owner;
+-- As the function can take `ACCESS EXCLUSIVE` lock, consider limiting the access to the function to only trusted users,
+-- as it can lead to blocking access for other users.
 GRANT EXECUTE ON FUNCTION pgutils.suspend_constraints(TEXT, TEXT[], BOOLEAN) TO public;

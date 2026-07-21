@@ -12,6 +12,7 @@
 \ir database/pgutils/_trg_suspended_constraints_in_transaction_empty_check.sql
 \ir database/pgutils/active_mutexes.ddl
 \ir database/pgutils/can_role_alter_table.sql
+\ir database/pgutils/can_role_modify_table_data.sql
 \ir database/pgutils/suspend_constraints.sql
 \ir database/pgutils/suspend_constraints_by_name.sql
 \ir database/pgutils/suspended_constraints_in_transaction.ddl

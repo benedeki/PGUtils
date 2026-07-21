@@ -43,6 +43,7 @@ $$
 -------------------------------------------------------------------------------
 DECLARE
     _user_can_alter_table   BOOLEAN;
+    _user_can_modify_data   BOOLEAN;
     _target_table           TEXT;
     _table_oid              OID;
     _pk_field_ids           SMALLINT[];
@@ -57,9 +58,16 @@ BEGIN
     END IF;
 
     _user_can_alter_table := pgutils.can_role_alter_table(i_schema_name, i_table_name);
+    _user_can_modify_data := pgutils.can_role_modify_table_data(i_schema_name, i_table_name);
+
+    IF NOT _user_can_alter_table AND NOT _user_can_modify_data THEN
+        RAISE EXCEPTION
+            'User % has no legitimate reason to suspend constraints on table %.% (no ALTER, INSERT, UPDATE, DELETE or TRUNCATE privilege).',
+            session_user, i_schema_name, i_table_name;
+    END IF;
 
     IF i_persistently AND NOT _user_can_alter_table THEN
-        RAISE EXCEPTION 'The role % does not have permissions to alter the table %.%. Cannot persistently suspend the constraints.',
+        RAISE EXCEPTION 'The user % does not have permissions to alter the table %.%. Cannot persistently suspend the constraints.',
             session_user, i_schema_name, i_table_name;
     END IF;
 

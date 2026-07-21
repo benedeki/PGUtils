@@ -15,7 +15,8 @@
 
 CREATE OR REPLACE FUNCTION pgutils._trg_suspended_constraints_in_transaction_empty_check()
     RETURNS trigger AS
-    -------------------------------------------------------------------------------
+$$
+-------------------------------------------------------------------------------
 --
 -- Function: pgutils._trg_suspended_constraints_in_transaction_empty_check(0)
 -- Version:  0.1.0
@@ -28,8 +29,6 @@ CREATE OR REPLACE FUNCTION pgutils._trg_suspended_constraints_in_transaction_emp
 --      - The new row value, but should actually never reach this point, because the trigger should raise an exception
 --        if the constraint_name column is not null, which means that the record has not been removed from the table
 -------------------------------------------------------------------------------
-
-$$
 BEGIN
     IF NEW.constraint_name IS NOT NULL THEN
         RAISE EXCEPTION 'Constraint "%" has not been resumed', NEW.constraint_name;

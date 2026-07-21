@@ -12,12 +12,14 @@ that are often needed when working with Postgres databases.
     - [is_unique](#is_unique)
   - [Schema `pgutils`](#schema-pgutils)
     - [can_role_alter_table](#can_role_alter_table)
+    - [can_role_modify_table_data](#can_role_modify_table_data)
     - [global_id](#global_id)
     - [lock_mutex](#lock_mutex)
     - [log_to_console](#log_to_console)
     - [restore_all_constraints](#restore_all_constraints)
     - [restore_constraints](#restore_constraints)    
     - [suspend_constraints](#suspend_constraints)
+    - [suspend_constraints_by_name](#suspend_constraints_by_name)
 - [Contributing to PG Utils](#contributing-to-pg-utils)
   - [Did you find a bug?](#did-you-find-a-bug)
   - [Do you want to request a new feature?](#do-you-want-to-request-a-new-feature)
@@ -85,6 +87,23 @@ Checks if the specified role has permissions to alter the given table.
 | Returns   |         |                                                                              |
 |-----------|---------|------------------------------------------------------------------------------|
 | can_alter | BOOLEAN | `TRUE` if the role has the permission to alter the table, `FALSE` otherwise. |
+
+
+#### can_role_modify_table_data
+
+Checks if the specified role has the privilege to modify the table's data in any form (INSERT, UPDATE, DELETE or
+TRUNCATE),
+
+| Parameter      | Type   | Default      | Description                                                                                                                                                                                                                |
+|----------------|--------|--------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| i_schema_name  | TEXT   | -            | Schema name of the table to check the permissions for.                                                                                                                                                                     | 
+| i_table_name   | TEXT   | -            | Table name for which the permissions should be checked.                                                                                                                                                                    | 
+| i_role_name    | TEXT   | session_user | Name of the role for which the permissions should be checked. If not provided the user connected to the session is considered (not the owner of the function that calls this function even if `SECURITY DEFINER` is used). | 
+
+| Returns    |         |                                                                                     |
+|------------|---------|-------------------------------------------------------------------------------------|
+| can_modify | BOOLEAN | `TRUE` if the role has the privilege to modify the table's data, `FALSE` otherwise. |
+
 
 #### global_id
 
@@ -186,10 +205,10 @@ suspends all the constraints of the provided names for a given table and stores 
 | i_constraint_names | TEXT[]   | -        | Array of constraint names to suspend.                                                                                                                                                                                                                                                                                                                                                         |
 | i_persistently     | BOOLEAN  | `FALSE`  | Flag that indicates whether the suspended constraints should be stored persistently so it last over transactions.<br>**NB!** Use persistence CAREFULLY RESPONSIBLY, as the constraints will be suspended until they are explicitly restored and can lead to data integrity issues. Only a user with grant to alter the table can use this option, otherwise the function will raise an error. |
 
-| Returns (set)   |      |                                  |
-|-----------------|------|----------------------------------|
+| Returns (set)   |      |                                   |
+|-----------------|------|-----------------------------------|
 | constraint_name | TEXT | Name of the suspended constraint. |
-| constraint_type | TEXT | Type of the suspended constraint. |
+| constraint_type | CHAR | Type of the suspended constraint. |
 
 Possible returned constraint types can be seen in [constraint types](#constraint-types), the `char` column.
 
@@ -263,3 +282,4 @@ The following constraint types are supported by the `suspend_constraints` and `l
 | `UNIQUE`               | `u`                    | UNIQUE constraint      |
 | `NOT NULL`             | `n`                    | NOT NULL constraint    |
 | `EXCLUSION`            | `x`                    | EXCLUSION constraint   |
+| `TRIGGER`              | `t`                    | TRIGGER constraint     |

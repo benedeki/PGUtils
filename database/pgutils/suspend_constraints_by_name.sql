@@ -33,7 +33,7 @@ $$
 -- Parameters:
 --      i_schema_name           - Schema name of the table for which the constraints should be suspended.
 --      i_table_name            - Table name for which the constraints should be suspended.
---      i_constraint_name       - Array of constraint names to suspend.
+--      i_constraint_names      - Array of constraint names to suspend.
 --      i_persistently          - (optional) Flag that indicates whether the suspended constraints should be stored
 --                                persistently so it last over transactions.
 --                                NB!
@@ -53,6 +53,8 @@ $$
 LANGUAGE sql VOLATILE SECURITY DEFINER;
 
 ALTER FUNCTION pgutils.suspend_constraints_by_name(TEXT, TEXT, TEXT[], BOOLEAN) OWNER TO pgutils_owner;
+-- As the function can take `ACCESS EXCLUSIVE` lock, consider limiting the access to the function to only trusted users,
+-- as it can lead to blocking access for other users.
 GRANT EXECUTE ON FUNCTION pgutils.suspend_constraints_by_name(TEXT, TEXT, TEXT[], BOOLEAN) TO public;
 
 
@@ -84,7 +86,6 @@ $$
 --                                are explicitly restored and can lead to data integrity issues.
 --                                Only a user with grant to alter the table can use this option, otherwise the function
 --                                will raise an error.
---                                constraints will be suspended.
 --
 -- Returns:
 --      constraint_name         - Name of the suspended constraint
@@ -97,4 +98,6 @@ $$
 LANGUAGE sql VOLATILE SECURITY DEFINER;
 
 ALTER FUNCTION pgutils.suspend_constraints_by_name(TEXT, TEXT[], BOOLEAN) OWNER TO pgutils_owner;
+-- As the function can take `ACCESS EXCLUSIVE` lock, consider limiting the access to the function to only trusted users,
+-- as it can lead to blocking access for other users.
 GRANT EXECUTE ON FUNCTION pgutils.suspend_constraints_by_name(TEXT, TEXT[], BOOLEAN) TO public;
