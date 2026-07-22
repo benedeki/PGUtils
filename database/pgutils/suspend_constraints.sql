@@ -65,7 +65,7 @@ BEGIN
                        WHEN 'UNIQUE' THEN 'u'
                        WHEN 'NOT NULL' THEN 'n'
                        WHEN 'EXCLUSION' THEN 'x'
-                       WHEN 'CONSTRAINT TRIGGER' THEN 't'
+                       WHEN 'TRIGGER' THEN 't'
                        ELSE CASE
                                 WHEN char_length(CT.ct) = 1 THEN CT.CT
                                 ELSE NULL

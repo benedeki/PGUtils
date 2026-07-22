@@ -43,21 +43,23 @@ class CanRoleModifyTableData extends DBTestSuite {
   }
 
   test("Role with INSERT, UPDATE and DELETE grants can modify table data") {
-    ddl("GRANT INSERT, UPDATE, DELETE ON pgutils_testing.table2 TO pgutils_owner;")
+    ddl("REVOKE INSERT, UPDATE, DELETE ON TABLE pgutils_testing.table2 FROM pgutils_tester;")
+    ddl("GRANT INSERT, UPDATE, DELETE ON pgutils_testing.table2 TO pgutils_tester;")
     val result = function("pgutils.can_role_modify_table_data")
-      .setParam("i_role_name", "pgutils_owner")
+      .setParam("i_role_name", "pgutils_tester")
       .setParam("i_schema_name", "pgutils_testing")
-      .setParam("i_table_name", "table1")
+      .setParam("i_table_name", "table2")
       .callFunction()
       .getBoolean("can_modify").get
     assert(result)
   }
 
   test("Role with only TRUNCATE grant can modify table data") {
-    ddl("GRANT TRUNCATE ON pgutils_testing.table2 TO pgutils_owner;")
+    ddl("REVOKE INSERT, UPDATE, DELETE ON TABLE pgutils_testing.table2 FROM pgutils_tester;")
+    ddl("GRANT TRUNCATE ON pgutils_testing.table2 TO pgutils_tester;")
 
     val result = function("pgutils.can_role_modify_table_data")
-      .setParam("i_role_name", "pgutils_owner")
+      .setParam("i_role_name", "pgutils_tester")
       .setParam("i_schema_name", "pgutils_testing")
       .setParam("i_table_name", "table2")
       .callFunction()

@@ -21,7 +21,7 @@ reviews:
     enabled: true
     drafts: false
     labels:
-      - "!Work in progress"   # skip PRs labeled "Work in progress"
+      - "!work in progress"   # skip PRs labeled "Work in progress"
 
   path_filters:
     - "!**/target/**"          # sbt build output (root + project/)
