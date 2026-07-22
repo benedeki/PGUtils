@@ -32,13 +32,10 @@ $$
 -- Parameters:
 --      i_schema_name           - Schema name of the table for which the constraints should be restored
 --      i_table_name            - Table name for which the constraints should be restored
---      i_enforced_valid_state  - Flag that can enforce the constraints to be restored as NOT VALID regardless of their
---                                previous state. This can be useful in case when the constraints were suspended for a
---                                large data change where the data are fairly certain to be OK and/or just want to
---                                validate the constraints later in a separate transaction to avoid locking the table
---                                for too long. By default, the constraints will be restored to their previous state,
---                                meaning that if a constraint was valid before disabling, it will be restored as valid,
---                                and if it was not valid, it will be restored as not valid.
+--      i_enforced_valid_state  - Setting that can enforce the constraints to be restored in certain validity state
+--                                regardless  of previous state. If set to TRUE, all the constraints will be restored as
+--                                VALID, if set to FALSE, all the constraints will be restored as NOT VALID, and if set
+--                                to NULL (default), the constraints will be restored to their previous state.
 --                                NB!
 --                                `NOT VALID` constraint means, it's not guaranteed that the existing data in the table
 --                                satisfy the constraint, but any new data inserted or updated after the constraint is
@@ -57,9 +54,10 @@ $$
 --
 -------------------------------------------------------------------------------
 DECLARE
-    _non_privileged_user    BOOLEAN;
-    _r                      RECORD;
-    _constraints_command    TEXT := '';
+    _non_privileged_user            BOOLEAN;
+    _r                              RECORD;
+    _constraints_command            TEXT := '';
+    _c_non_valid_constraint_types   CONSTANT CHAR[] = ARRAY['c', 'f', 'n'];
 BEGIN
     _non_privileged_user := NOT pgutils.can_role_alter_table(i_schema_name, i_table_name);
 
@@ -93,7 +91,7 @@ BEGIN
 
             -- enforcing a state change to another that it was before requires a privileged user
             -- but the other combination doesn't need to be checked because of the condition above
-            IF (NOT(i_enforced_valid_state) AND _r.validated) THEN
+            IF NOT(i_enforced_valid_state) AND _r.validated AND (_r.constraint_type = ANY(_c_non_valid_constraint_types)) THEN
                 RAISE EXCEPTION
                     'User % cannot restore constraint % on table %.%. The constraint validity state would change and the user does not have permission to alter the table.',
                     session_user, _r.constraint_name, i_schema_name, i_table_name;
@@ -105,7 +103,7 @@ BEGIN
             _r.definition,
             CASE
                 WHEN i_enforced_valid_state THEN ''
-                WHEN NOT(i_enforced_valid_state) AND _r.constraint_type in ('c', 'f', 'n') THEN ' NOT VALID'
+                WHEN NOT(i_enforced_valid_state) AND (_r.constraint_type = ANY(_c_non_valid_constraint_types)) THEN ' NOT VALID'
                 ELSE CASE WHEN _r.validated THEN '' ELSE ' NOT VALID' END
             END
         );

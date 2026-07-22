@@ -268,7 +268,7 @@ class SuspendRestoreConstraints extends DBTestSuite with OriginalTestMethod{
   protected def testForFail[E <: AnyRef](testName: String, failVerification:E => Option[String], testTags: Tag*)
                                         (testFun: => Any /* Assertion */)
                                         (implicit classTag: ClassTag[E], pos: source.Position): Unit = {
-    val dbTestFun = {
+    val dbTestFun: () => Unit = () => {
       val caught = intercept[E] {
         testFun
         dbConnection.connection.commit()

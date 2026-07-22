@@ -33,8 +33,7 @@ $$
 --      i_enforced_valid_state  - (optional) Setting that can enforce the constraints to be restored in certain validity
 --                                state regardless  of previous state. If set to TRUE, all the constraints will be
 --                                restored as VALID, if set to FALSE, all the constraints will be restored as NOT VALID,
---                                and if set to NULL (default), the constraints will be restored to their previous state.
---                                regardless of their previous state.
+--                                and if set to NULL (default), the constraints will be restored to their previous state,
 --                                NB!
 --                                `NOT VALID` constraint means, it's not guaranteed that the existing data in the table
 --                                satisfy the constraint, but any new data inserted or updated after the constraint is

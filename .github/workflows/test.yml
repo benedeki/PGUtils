@@ -52,7 +52,7 @@ jobs:
 
       - uses: coursier/setup-action@v1
         with:
-          jvm: adopt:8
+          jvm: temurin:8
           apps: sbt
 
       - uses: coursier/cache-action@v8

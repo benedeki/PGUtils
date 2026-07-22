@@ -80,14 +80,14 @@ BEGIN
 
     -- we might need to query the constraints twice, no need to always do the join with the analysis around
     SELECT PC.oid
-    FROM pg_class PC
-        INNER JOIN pg_namespace PNS ON PNS.oid = PC.relnamespace
+    FROM pg_catalog.pg_class PC
+        INNER JOIN pg_catalog.pg_namespace PNS ON PNS.oid = PC.relnamespace
     WHERE PNS.nspname = i_schema_name AND
         PC.relname = i_table_name
         INTO _table_oid;
 
     SELECT PCON.conkey
-    FROM pg_constraint PCON
+    FROM pg_catalog.pg_constraint PCON
     WHERE PCON.conrelid = _table_oid AND
         PCON.contype = 'p'
     INTO _pk_field_ids;
@@ -100,7 +100,7 @@ BEGIN
             PCON.contype,
             PCON.convalidated,
             PCON.oid
-        FROM pg_constraint PCON
+        FROM pg_catalog.pg_constraint PCON
         WHERE PCON.conrelid = _table_oid AND
             PCON.conname = ANY (i_constraint_names) AND
             -- don't want to include `NOT NULL` constraints that are part of the primary key, as they cannot be suspended separately
@@ -133,7 +133,7 @@ END;
 $$
 LANGUAGE plpgsql
 VOLATILE SECURITY DEFINER
-SET search_path = pg_temp, pg_catalog, public;
+SET search_path = pg_catalog, pg_temp, public;
 
 ALTER FUNCTION pgutils._suspend_constraints(TEXT, TEXT, TEXT[], BOOLEAN) OWNER TO postgres;
 GRANT EXECUTE ON FUNCTION pgutils._suspend_constraints(TEXT, TEXT, TEXT[], BOOLEAN) TO pgutils_owner;
