@@ -19,7 +19,7 @@ import sbt.*
 object Dependencies {
   object Versions {
 
-    val scalatest = "3.2.15"
+    val scalatest = "3.2.20"
     val balta = "0.3.0"
   }
 
