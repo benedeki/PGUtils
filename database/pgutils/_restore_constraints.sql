@@ -109,7 +109,12 @@ BEGIN
         );
         constraint_name := _r.constraint_name;
         constraint_type := _r.constraint_type;
-        validated := _r.validated;
+        validated := CASE
+            WHEN i_enforced_valid_state IS TRUE THEN TRUE
+            WHEN i_enforced_valid_state IS FALSE
+                AND _r.constraint_type = ANY(_c_non_valid_constraint_types) THEN FALSE
+            ELSE _r.validated
+        END;
         RETURN NEXT;
     END LOOP;
 
@@ -123,7 +128,7 @@ BEGIN
 END;
 $$
 LANGUAGE plpgsql VOLATILE SECURITY DEFINER
-SET search_path = pg_temp, pg_catalog, public;
+SET search_path = pg_catalog, pg_temp, public;
 
 ALTER FUNCTION pgutils._restore_constraints(TEXT, TEXT, BOOLEAN) OWNER TO postgres;
 GRANT EXECUTE ON FUNCTION pgutils._restore_constraints(TEXT, TEXT, BOOLEAN) TO pgutils_owner;
