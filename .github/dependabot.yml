@@ -5,7 +5,7 @@ updates:
     target-branch: "master"
     schedule:
       interval: "weekly"
-      day: "sunday"
+      day: "monday"
     labels:
       - "auto update"
       - "infrastructure"
@@ -20,7 +20,7 @@ updates:
     target-branch: "master"
     schedule:
       interval: "weekly"
-      day: "sunday"
+      day: "monday"
     labels:
       - "auto update"
       - "dependencies"

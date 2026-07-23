@@ -32,7 +32,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:16
+        image: postgres:18
         env:
           POSTGRES_PASSWORD: ${{ env.postgres-password }}
           POSTGRES_DB: pgutils_db
@@ -45,23 +45,25 @@ jobs:
           - 5432:5432
     steps:
       - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
           persist-credentials: false
-      - uses: coursier/cache-action@bebeeb0e6f48ebad66d3783946588ecf43114433
 
-      - name: Setup Scala
-        uses: olafurpg/setup-scala@32ffa16635ff8f19cc21ea253a987f0fdf29844c
+      - uses: coursier/setup-action@v1
         with:
-          java-version: "adopt@1.11.0-11"
+          jvm: temurin:8
+          apps: sbt
+
+      - uses: coursier/cache-action@v8
 
       - name: Prepare testing database
         env:
           PGPASSWORD:  ${{ env.postgres-password }}
         run: |
           psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -f install.psql
-          psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -f tests/src/test/resources/test_user.ddl
+          psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -f testing_install.psql
           psql -h 127.0.0.1 -U postgres -d pgutils_db -v ON_ERROR_STOP=1 -c "GRANT CONNECT ON DATABASE pgutils_db TO pgutils_tester;"
+
       - name: Run tests
         run: sbt test

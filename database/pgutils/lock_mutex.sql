@@ -30,7 +30,9 @@ $$
 --          rolls back. This is because the table pgutils.active_mutexes is locked for the given operation.
 --
 -- Parameters:
---      i_mutex_name - Name of the operation that will perform the lock.
+--      i_mutex_name - The name of the lock, usually the name of the function that wants to acquire the lock. This is
+--                     used to prevent concurrent execution of the same function. Operations with the same `i_mutex_name`
+--                     are serialized, different ones don't block each other.
 --
 -------------------------------------------------------------------------------
 DECLARE
@@ -39,7 +41,7 @@ BEGIN
     PERFORM 1
     FROM pgutils.active_mutexes
     WHERE mutex_name = i_mutex_name
-        FOR UPDATE;
+    FOR UPDATE;
 
     IF NOT found THEN
             INSERT INTO pgutils.active_mutexes (mutex_name)

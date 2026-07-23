@@ -19,18 +19,19 @@ name: Check PR Release Notes
 on:
   pull_request:
     types: [opened, synchronize, reopened, edited, labeled, unlabeled]
-    branches: [ master ]
+    branches: [ master, main ]
 
 env:
   skip-label: 'no RN'
   rls-notes-tag-regex: '(#### )?[Rr]elease [Nn]otes:?'
 
 jobs:
-  check-release-notes:
+  check-pr-release-notes:
+    name: Check PR Release Notes
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548
+      - uses: actions/setup-python@v6
         with:
           python-version: '3.13'
 

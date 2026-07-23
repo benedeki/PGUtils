@@ -13,23 +13,24 @@
  * limitations under the License.
  */
 
-DO
-$do$
-    BEGIN
-        IF EXISTS (
-                SELECT FROM pg_catalog.pg_roles
-                WHERE  rolname = 'pgutils_tester') THEN
+package benedeki.testing
 
-            RAISE NOTICE 'Role "pgutils_tester" already exists. Skipping.';
-        ELSE
-            CREATE ROLE pgutils_tester
-                LOGIN
-                PASSWORD 'ChangeMe!'
-                NOSUPERUSER
-                INHERIT
-                NOCREATEDB
-                NOCREATEROLE
-                NOREPLICATION;
-        END IF;
-    END;
-$do$;
+import za.co.absa.db.balta.classes.DBConnection
+
+object ExtraFunctions {
+  private def execute(sql: String)(implicit connection: DBConnection): Unit = {
+    val stmt = connection.connection.createStatement()
+    try
+      stmt.executeUpdate(sql)
+    finally
+      stmt.close()
+  }
+
+  def ddl(sql: String)(implicit connection: DBConnection): Unit = {
+    execute(sql)
+  }
+
+  def dml(sql: String)(implicit connection: DBConnection): Unit = {
+    execute(sql)
+  }
+}

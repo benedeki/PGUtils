@@ -1,0 +1,6 @@
+\echo Creating resources for testing
+\ir tests/src/test/resources/test_users.ddl
+\ir tests/src/test/resources/test_schema.ddl
+\ir tests/src/test/resources/test_tables.ddl
+
+\echo All testing resources have been created

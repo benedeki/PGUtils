@@ -13,22 +13,17 @@
  * limitations under the License.
  */
 
-DO
-$do$
-    BEGIN
-        IF EXISTS (
-            SELECT FROM pg_catalog.pg_roles
-            WHERE  rolname = 'pgutils_owner')
-        THEN
-            RAISE NOTICE 'Role "pgutils_owner" already exists. Skipping.';
-        ELSE
-            CREATE ROLE pgutils_owner
-                NOLOGIN
-                NOSUPERUSER
-                INHERIT
-                NOCREATEDB
-                NOCREATEROLE
-                NOREPLICATION;
-        END IF;
-    END;
-$do$;
+package benedeki.testing.implicits
+
+import za.co.absa.db.balta.classes.setter.CustomDBType
+
+import scala.language.implicitConversions
+
+object ArrayImplicits {
+  implicit class StringArrayEnhancements(val strings: Array[String]) extends AnyVal {
+    def toDbType: CustomDBType = {
+      val value = strings.map('"' + _ + '"').mkString("{",",","}")
+      CustomDBType(value , "TEXT[]")
+    }
+  }
+}

@@ -13,22 +13,13 @@
  * limitations under the License.
  */
 
-DO
-$do$
-    BEGIN
-        IF EXISTS (
-            SELECT FROM pg_catalog.pg_roles
-            WHERE  rolname = 'pgutils_owner')
-        THEN
-            RAISE NOTICE 'Role "pgutils_owner" already exists. Skipping.';
-        ELSE
-            CREATE ROLE pgutils_owner
-                NOLOGIN
-                NOSUPERUSER
-                INHERIT
-                NOCREATEDB
-                NOCREATEROLE
-                NOREPLICATION;
-        END IF;
-    END;
-$do$;
+package benedeki.testing.classes
+
+import org.scalactic.source
+import org.scalatest.Tag
+import org.scalatest.funsuite.AnyFunSuiteLike
+
+trait OriginalTestMethod extends AnyFunSuiteLike {
+  override def test(testName: String, testTags: Tag*)(testFun: => Any /* Assertion */)(implicit pos: source.Position): Unit =
+    super.test(testName, testTags: _*)(testFun)
+}

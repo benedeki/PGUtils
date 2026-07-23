@@ -27,19 +27,19 @@ DECLARE
 BEGIN
     PERFORM 1
     FROM information_schema.sequences
-    WHERE sequence_name = _schema_name AND
-        sequence_schema = _sequence_name;
+    WHERE sequence_name = _sequence_name AND
+        sequence_schema = _schema_name;
 
     IF NOT found     THEN
        -- _server_id can be calculated in various ways, the key is to have a deterministic prescription that returns a
        -- number between 1 and _server_count and is expected to differ between servers.
-        _server_id := abs(hashtextextended(inet_server_addr()::text, 0)) % 9222;
+        _server_id := abs(hashtextextended(inet_server_addr()::text, 0)) % _server_count;
 
         _sequence_start := (_server_id + 1) * _sequence_range + 1; -- (_server_id + 1) to avoid starting at 0 for server_id 0, thus 32 bits to not interfering
         _sequence_end := (_server_id + 2) * _sequence_range;
 
         _command := format(
-                'CREATE SEQUENCE IF NOT EXISTS %s.%s INCREMENT 1 START %s MINVALUE %s MAXVALUE %s CACHE 1;',
+                'CREATE SEQUENCE %s.%s INCREMENT 1 START %s MINVALUE %s MAXVALUE %s CACHE 1;',
                 _schema_name,
                 _sequence_name,
                 _sequence_start,

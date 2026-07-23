@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-name: Dependent Issues
+name: Dependent Items
 
 on:
   issues:
@@ -40,10 +40,15 @@ on:
     - cron: '0 0 * * *'
 
 jobs:
-  check:
+  dependent-items-check:
+    name: Dependent Items Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
     steps:
-      - uses: z0al/dependent-issues@950226e7ca8fc43dc209a7febf67c655af3bdb43
+      - uses: z0al/dependent-issues@v1
         env:
           # (Required) The token to use to make API calls to GitHub.
           GITHUB_TOKEN: ${{ secrets.PAT_REPO_PROJECT_DISCUSS }}

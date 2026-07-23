@@ -1,0 +1,85 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: "en-US"
+
+tone_instructions: >-
+  Be direct and concise. Skip praise and filler. Focus comments on
+  correctness, security, and maintainability issues.
+
+early_access: false
+enable_free_tier: true
+
+reviews:
+  profile: "chill"          # "chill" or "assertive" — start lenient, tighten later
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: true
+
+  auto_review:
+    enabled: true
+    drafts: false
+    labels:
+      - "!work in progress"   # skip PRs labeled "Work in progress"
+
+  path_filters:
+    - "!**/target/**"          # sbt build output (root + project/)
+    - "!**/*.class"
+    - "!**/*.jar"
+    - "!**/generated/**"
+    - "!**/*.lock"
+
+  path_instructions:
+    - path: ".github/workflows/**"
+      instructions: |
+        Do not flag GitHub Actions referenced by version tag (e.g. actions/checkout@v4)
+        as a security issue requiring a pinned commit SHA. This is intentional in this
+        repository — tags are acceptable here and should not be suggested for replacement
+        with commit hashes.
+
+    - path: "database/**/*.{sql,ddl}"
+      instructions: |
+        This is PostgreSQL SQL, PL/pgSQL, and DDL source code. Check for:
+        - Proper transaction boundaries and explicit error handling
+        - SQL injection risk in any dynamically constructed queries (EXECUTE with
+          unsanitized string concatenation)
+        - Correct use of PL/pgSQL exception blocks
+        - Missing indexes implied by query patterns, where evident
+        - Idempotency of migrations/DDL (IF NOT EXISTS, safe re-run behavior,
+          safe column/type alterations)
+
+    - path: "tests/**/*.scala"
+      instructions: |
+        These are Scala tests exercising the Postgres database code in `database/`.
+        Check for:
+        - Proper test isolation (each test cleans up or uses its own schema/transaction
+          rather than leaking state into other tests)
+        - Edge case coverage for the SQL/PL-pgSQL behavior being tested
+        - Correct resource cleanup (connections, statements) even on failure paths
+        - Assertions that actually verify database state, not just that a query ran
+          without throwing
+        Don't flag test verbosity.
+
+    - path: "tests/src/test/resources/**"
+      instructions: |
+        These are test fixture/resource files (SQL, DDL, data, or config) used by the
+        Scala test suite in `tests/`. Apply the same PostgreSQL correctness checks as
+        `database/**` where the file is SQL or DDL. Do not flag them for lacking
+        production-grade concerns like migration idempotency unless they are clearly
+        meant to be run as real migrations — fixtures are allowed to be simplified
+        for test setup.
+
+  tools:
+    shellcheck:
+      enabled: false
+    markdownlint:
+      enabled: true
+    github-checks:
+      enabled: true
+      timeout_ms: 90000
+    languagetool:
+      enabled: true
+
+chat:
+  auto_reply: true
