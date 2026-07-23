@@ -277,7 +277,7 @@ class SuspendRestoreConstraints extends DBTestSuite with OriginalTestMethod{
       val assertError = fail.getOrElse("")
       assert(fail.isEmpty, assertError)
     }
-    super[OriginalTestMethod].test(testName, testTags: _*)(dbTestFun)
+    super[OriginalTestMethod].test(testName, testTags: _*)(dbTestFun())
   }
 
   private def isErrorOfLeftoverConstraint(exception: PSQLException): Option[String] = {
