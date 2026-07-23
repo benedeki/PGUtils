@@ -38,9 +38,9 @@ $$
     SELECT
         PCON.conname,
         PCON.contype
-    FROM pg_class PC
-        INNER JOIN pg_namespace PNS  ON PNS.oid = PC.relnamespace
-        INNER JOIN pg_constraint PCON ON PCON.conrelid = PC.oid
+    FROM pg_catalog.pg_class PC
+        INNER JOIN pg_catalog.pg_namespace PNS  ON PNS.oid = PC.relnamespace
+        INNER JOIN pg_catalog.pg_constraint PCON ON PCON.conrelid = PC.oid
     WHERE PNS.nspname = i_schema_name AND
         PC.relname  = i_table_name;
 $$
